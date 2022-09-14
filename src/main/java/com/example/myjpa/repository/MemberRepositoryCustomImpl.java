@@ -2,23 +2,24 @@ package com.example.myjpa.repository;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.example.myjpa.entity.Member;
+import com.example.myjpa.entity.MemberDTO;
 import com.example.myjpa.entity.QMember;
+import com.example.myjpa.entity.QMemberDTO;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
-	@Autowired
-	private JPAQueryFactory jpaQueryFactory;
-	private QMember qMember = QMember.member;
+	private final JPAQueryFactory jpaQueryFactory;
+	private final QMember qMember = QMember.member;
 	
 	@Override
-	public List<Member> findByNameOrEmail(String type, String keyword) {
+	public List<MemberDTO> findByNameOrEmail(String type, String keyword) {
 		
-		List<Member> content = jpaQueryFactory
-				.select(qMember)
+		List<MemberDTO> content = jpaQueryFactory
+				.select(new QMemberDTO(qMember.name, qMember.email))
 				.from(qMember)
 				.where(qMember.email.contains(keyword))
 				.fetch();
